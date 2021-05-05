@@ -531,7 +531,7 @@ class MessageDict:
         return MessageDict.build_message_dict(
             message_id=row["id"],
             last_edit_time=row["last_edit_time"],
-            edit_history_json=row["edit_history"],
+            edit_history_entries=row["edit_history"],
             content=row["content"],
             topic_name=row[DB_TOPIC_NAME],
             date_sent=row["date_sent"],
@@ -552,7 +552,7 @@ class MessageDict:
     def build_message_dict(
         message_id: int,
         last_edit_time: Optional[datetime.datetime],
-        edit_history_json: Optional[str],
+        edit_history_entries: Optional[str],
         content: str,
         topic_name: str,
         date_sent: datetime.datetime,
@@ -589,8 +589,8 @@ class MessageDict:
 
         if last_edit_time is not None:
             obj["last_edit_timestamp"] = datetime_to_timestamp(last_edit_time)
-            assert edit_history_json is not None
-            edit_history: List[EditHistoryEvent] = orjson.loads(edit_history_json)
+            assert edit_history_entries is not None
+            edit_history: List[EditHistoryEvent] = orjson.loads(edit_history_entries)
             obj["edit_history"] = edit_history
 
         if Message.need_to_render_content(
