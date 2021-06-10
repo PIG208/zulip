@@ -7,6 +7,7 @@ from pathlib import PosixPath
 from typing import Any, Dict, List, Tuple, Union
 from urllib.parse import urljoin
 
+import django_stubs_ext
 from cryptography.utils import CryptographyDeprecationWarning
 from django.template.loaders import app_directories
 
@@ -85,6 +86,9 @@ AVATAR_SALT = get_secret("avatar_salt")
 # SERVER_GENERATION is used to track whether the server has been
 # restarted for triggering browser clients to reload.
 SERVER_GENERATION = int(time.time())
+
+# Django stubs require calling `monkeypatch` to work for generics
+django_stubs_ext.monkeypatch()
 
 # Key to authenticate this server to zulip.org for push notifications, etc.
 ZULIP_ORG_KEY = get_secret("zulip_org_key")

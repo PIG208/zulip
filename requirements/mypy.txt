@@ -7,6 +7,24 @@
 #
 # For details, see requirements/README.md .
 #
+asgiref==3.3.4 \
+    --hash=sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee \
+    --hash=sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78
+    # via django
+django-stubs-ext==0.2.0 \
+    --hash=sha256:bd4a1e36ef2ba0ef15801933c85c68e59b383302c873795c6ecfc25950c7ecdb \
+    --hash=sha256:c14f297835a42c1122421ec7e2d06579996b29d33b8016002762afa5d78863af
+    # via django-stubs
+django-stubs==1.8.0 \
+    --hash=sha256:717967d7fee0a6af0746724a0be80d72831a982a40fa8f245a6a46f4cafd157b \
+    --hash=sha256:bde9e44e3c4574c2454e74a3e607cc3bc23b0441bb7d1312cd677d5e30984b74
+    # via -r requirements/mypy.in
+django==3.2.4 \
+    --hash=sha256:66c9d8db8cc6fe938a28b7887c1596e42d522e27618562517cc8929eb7e7f296 \
+    --hash=sha256:ea735cbbbb3b2fba6d4da4784a0043d84c67c92f1fdf15ad6db69900e792c10f
+    # via
+    #   django-stubs
+    #   django-stubs-ext
 mypy-extensions==0.4.3 \
     --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \
     --hash=sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8
@@ -36,11 +54,20 @@ mypy==0.812 \
     --hash=sha256:d7da2e1d5f558c37d6e8c1246f1aec1e7349e4913d8fb3cb289a35de573fe2eb
     # via
     #   -r requirements/mypy.in
+    #   django-stubs
     #   sqlalchemy-stubs
+pytz==2021.1 \
+    --hash=sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da \
+    --hash=sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798
+    # via django
 sqlalchemy-stubs==0.4 \
     --hash=sha256:5eec7aa110adf9b957b631799a72fef396b23ff99fe296df726645d01e312aa5 \
     --hash=sha256:c665d6dd4482ef642f01027fa06c3d5e91befabb219dc71fc2a09e7d7695f7ae
     # via -r requirements/mypy.in
+sqlparse==0.4.1 \
+    --hash=sha256:017cde379adbd6a1f15a61873f43e8274179378e95ef3fede90b5aa64d304ed0 \
+    --hash=sha256:0f91fd2e829c44362cbcfab3e9ae12e22badaa8a29ad5ff599f9ec109f0454e8
+    # via django
 typed-ast==1.4.3 \
     --hash=sha256:01ae5f73431d21eead5015997ab41afa53aa1fbe252f9da060be5dad2c730ace \
     --hash=sha256:067a74454df670dcaa4e59349a2e5c81e567d8d65458d480a5b3dfecec08c5ff \
@@ -78,5 +105,6 @@ typing-extensions==3.10.0.0 \
     --hash=sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342 \
     --hash=sha256:779383f6086d90c99ae41cf0ff39aac8a7937a9283ce0a414e5dd782f4c94a84
     # via
+    #   django-stubs
     #   mypy
     #   sqlalchemy-stubs

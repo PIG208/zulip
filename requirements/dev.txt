@@ -399,6 +399,14 @@ django-statsd-mozilla==0.4.0 \
     --hash=sha256:0d87cb63de8107279cbb748caad9aa74c6a44e7e96ccc5dbf07b89f77285a4b8 \
     --hash=sha256:81084f3d426f5184f0a0f1dbfe035cc26b66f041d2184559d916a228d856f0d3
     # via -r requirements/common.in
+django-stubs-ext==0.2.0 \
+    --hash=sha256:bd4a1e36ef2ba0ef15801933c85c68e59b383302c873795c6ecfc25950c7ecdb \
+    --hash=sha256:c14f297835a42c1122421ec7e2d06579996b29d33b8016002762afa5d78863af
+    # via django-stubs
+django-stubs==1.8.0 \
+    --hash=sha256:717967d7fee0a6af0746724a0be80d72831a982a40fa8f245a6a46f4cafd157b \
+    --hash=sha256:bde9e44e3c4574c2454e74a3e607cc3bc23b0441bb7d1312cd677d5e30984b74
+    # via -r requirements/mypy.in
 django-two-factor-auth[call,phonenumberslite,sms]==1.13.1 \
     --hash=sha256:a20e03d256fd9fd668988545f052cedcc47e5a981888562e5e27d0bb83deae89 \
     --hash=sha256:d270d4288731233621a9462a89a8dfed2dcb86fa354125c816a89772d55f9e29
@@ -414,6 +422,8 @@ django[argon2]==3.2.4 \
     #   django-otp
     #   django-phonenumber-field
     #   django-sendfile2
+    #   django-stubs
+    #   django-stubs-ext
     #   django-two-factor-auth
 docutils==0.16 \
     --hash=sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af \
@@ -767,6 +777,7 @@ mypy==0.812 \
     --hash=sha256:d7da2e1d5f558c37d6e8c1246f1aec1e7349e4913d8fb3cb289a35de573fe2eb
     # via
     #   -r requirements/mypy.in
+    #   django-stubs
     #   sqlalchemy-stubs
 oauthlib==3.1.1 \
     --hash=sha256:42bf6354c2ed8c6acb54d971fce6f88193d97297e18602a3a886603f9d7730cc \
@@ -1553,6 +1564,7 @@ typing-extensions==3.10.0.0 \
     #   arrow
     #   asgiref
     #   black
+    #   django-stubs
     #   importlib-metadata
     #   libcst
     #   mypy
