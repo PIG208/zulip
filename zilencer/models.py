@@ -1,4 +1,3 @@
-import datetime
 from typing import List, Tuple
 
 from django.conf import settings
@@ -19,12 +18,12 @@ class RemoteZulipServer(models.Model):
     API_KEY_LENGTH = 64
     HOSTNAME_MAX_LENGTH = 128
 
-    uuid: str = models.CharField(max_length=UUID_LENGTH, unique=True)
-    api_key: str = models.CharField(max_length=API_KEY_LENGTH)
+    uuid = models.CharField(max_length=UUID_LENGTH, unique=True)
+    api_key = models.CharField(max_length=API_KEY_LENGTH)
 
-    hostname: str = models.CharField(max_length=HOSTNAME_MAX_LENGTH)
-    contact_email: str = models.EmailField(blank=True, null=False)
-    last_updated: datetime.datetime = models.DateTimeField("last updated", auto_now=True)
+    hostname = models.CharField(max_length=HOSTNAME_MAX_LENGTH)
+    contact_email = models.EmailField(blank=True, null=False)
+    last_updated = models.DateTimeField("last updated", auto_now=True)
 
     def __str__(self) -> str:
         return f"<RemoteZulipServer {self.hostname} {self.uuid[0:12]}>"
@@ -35,9 +34,9 @@ class RemoteZulipServer(models.Model):
 
 # Variant of PushDeviceToken for a remote server.
 class RemotePushDeviceToken(AbstractPushDeviceToken):
-    server: RemoteZulipServer = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
+    server = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
     # The user id on the remote server for this device device this is
-    user_id: int = models.BigIntegerField(db_index=True)
+    user_id = models.BigIntegerField(db_index=True)
 
     class Meta:
         unique_together = ("server", "user_id", "kind", "token")
@@ -51,19 +50,19 @@ class RemoteRealmAuditLog(AbstractRealmAuditLog):
     billing.  See RealmAuditLog and AbstractRealmAuditLog for details.
     """
 
-    server: RemoteZulipServer = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
-    realm_id: int = models.IntegerField(db_index=True)
+    server = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
+    realm_id = models.IntegerField(db_index=True)
     # The remote_id field lets us deduplicate data from the remote server
-    remote_id: int = models.IntegerField(db_index=True)
+    remote_id = models.IntegerField(db_index=True)
 
     def __str__(self) -> str:
         return f"<RemoteRealmAuditLog: {self.server} {self.event_type} {self.event_time} {self.id}>"
 
 
 class RemoteInstallationCount(BaseCount):
-    server: RemoteZulipServer = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
+    server = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
     # The remote_id field lets us deduplicate data from the remote server
-    remote_id: int = models.IntegerField(db_index=True)
+    remote_id = models.IntegerField(db_index=True)
 
     class Meta:
         unique_together = ("server", "property", "subgroup", "end_time")
@@ -77,10 +76,10 @@ class RemoteInstallationCount(BaseCount):
 
 # We can't subclass RealmCount because we only have a realm_id here, not a foreign key.
 class RemoteRealmCount(BaseCount):
-    server: RemoteZulipServer = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
-    realm_id: int = models.IntegerField(db_index=True)
+    server = models.ForeignKey(RemoteZulipServer, on_delete=models.CASCADE)
+    realm_id = models.IntegerField(db_index=True)
     # The remote_id field lets us deduplicate data from the remote server
-    remote_id: int = models.IntegerField(db_index=True)
+    remote_id = models.IntegerField(db_index=True)
 
     class Meta:
         unique_together = ("server", "realm_id", "property", "subgroup", "end_time")

@@ -422,37 +422,6 @@ python_rules = RuleList(
             "bad_lines": ["a = []  # type: List[int]"],
         },
         {
-            "pattern": r": *(?!Optional)[^ ].*= models[.].*null=True",
-            "include_only": {"zerver/models.py"},
-            "description": "Model variable with null=true not annotated as Optional.",
-            "good_lines": [
-                "desc: Optional[Text] = models.TextField(null=True)",
-                "stream: Optional[Stream] = models.ForeignKey(Stream, null=True, on_delete=CASCADE)",
-                "desc: Text = models.TextField()",
-                "stream: Stream = models.ForeignKey(Stream, on_delete=CASCADE)",
-            ],
-            "bad_lines": [
-                "desc: Text = models.CharField(null=True)",
-                "stream: Stream = models.ForeignKey(Stream, null=True, on_delete=CASCADE)",
-            ],
-        },
-        {
-            "pattern": r": *Optional.*= models[.].*\)",
-            "exclude_pattern": "null=True",
-            "include_only": {"zerver/models.py"},
-            "description": "Model variable annotated with Optional but variable does not have null=true.",
-            "good_lines": [
-                "desc: Optional[Text] = models.TextField(null=True)",
-                "stream: Optional[Stream] = models.ForeignKey(Stream, null=True, on_delete=CASCADE)",
-                "desc: Text = models.TextField()",
-                "stream: Stream = models.ForeignKey(Stream, on_delete=CASCADE)",
-            ],
-            "bad_lines": [
-                "desc: Optional[Text] = models.TextField()",
-                "stream: Optional[Stream] = models.ForeignKey(Stream, on_delete=CASCADE)",
-            ],
-        },
-        {
             "pattern": "exit[(]1[)]",
             "include_only": {"/management/commands/"},
             "description": "Raise CommandError to exit with failure in management commands",

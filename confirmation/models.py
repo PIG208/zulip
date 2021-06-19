@@ -1,7 +1,6 @@
 # Copyright: (c) 2008, Jarek Zgoda <jarek.zgoda@gmail.com>
 
 __revision__ = "$Id: models.py 28 2009-10-22 15:03:02Z jarek.zgoda $"
-import datetime
 import secrets
 from base64 import b32encode
 from typing import Mapping, Optional, Union
@@ -120,11 +119,11 @@ def confirmation_url(
 
 class Confirmation(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=CASCADE)
-    object_id: int = models.PositiveIntegerField(db_index=True)
+    object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey("content_type", "object_id")
-    date_sent: datetime.datetime = models.DateTimeField(db_index=True)
-    confirmation_key: str = models.CharField(max_length=40, db_index=True)
-    realm: Optional[Realm] = models.ForeignKey(Realm, null=True, on_delete=CASCADE)
+    date_sent = models.DateTimeField(db_index=True)
+    confirmation_key = models.CharField(max_length=40, db_index=True)
+    realm = models.ForeignKey(Realm, null=True, on_delete=CASCADE)
 
     # The following list is the set of valid types
     USER_REGISTRATION = 1
@@ -135,7 +134,7 @@ class Confirmation(models.Model):
     MULTIUSE_INVITE = 6
     REALM_CREATION = 7
     REALM_REACTIVATION = 8
-    type: int = models.PositiveSmallIntegerField()
+    type = models.PositiveSmallIntegerField()
 
     def __str__(self) -> str:
         return f"<Confirmation: {self.content_object}>"
@@ -222,7 +221,7 @@ class RealmCreationKey(models.Model):
 
     # True just if we should presume the email address the user enters
     # is theirs, and skip sending mail to it to confirm that.
-    presume_email_valid: bool = models.BooleanField(default=False)
+    presume_email_valid = models.BooleanField(default=False)
 
     class Invalid(Exception):
         pass
