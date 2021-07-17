@@ -2,8 +2,11 @@ import os
 import pwd
 from typing import Optional, Set, Tuple
 
+import django_stubs_ext
+
 from scripts.lib.zulip_tools import deport
 
+django_stubs_ext.monkeypatch()
 ZULIP_ADMINISTRATOR = "desdemona+admin@zulip.com"
 
 # We want LOCAL_UPLOADS_DIR to be an absolute path so that code can
