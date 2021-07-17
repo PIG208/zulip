@@ -41,8 +41,10 @@ show_error_codes = true
 # Warn of unreachable or redundant code.
 warn_unreachable = true
 
+plugins = ["mypy_django_plugin.main"]
+
 [[tool.mypy.overrides]]
-module = ["zproject.configured_settings", "zproject.settings"]
+module = ["zproject.configured_settings", "zproject.settings", "zproject.default_settings"]
 no_implicit_reexport = false
 
 [[tool.mypy.overrides]]
@@ -58,7 +60,6 @@ module = [
     "defusedxml.*", # https://github.com/tiran/defusedxml/issues/46
     "digitalocean.*",
     "disposable_email_domains.*",
-    "django.*", # https://github.com/zulip/zulip/issues/11560
     "django_auth_ldap.*",
     "django_bmemcached.*",
     "django_cte.*",
@@ -94,3 +95,6 @@ module = [
     "zxcvbn.*", # https://github.com/dwolfhub/zxcvbn-python/issues/56
 ]
 ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "zproject.settings"
