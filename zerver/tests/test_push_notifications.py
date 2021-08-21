@@ -31,6 +31,7 @@ from zerver.lib.actions import (
 )
 from zerver.lib.avatar import absolute_avatar_url
 from zerver.lib.exceptions import JsonableError
+from zerver.lib.notes import MessageNotes
 from zerver.lib.push_notifications import (
     APNsContext,
     DeviceToken,
@@ -1504,7 +1505,7 @@ class TestGetAPNsPayload(PushNotificationTest):
             "Content of personal message",
         )
         message = Message.objects.get(id=message_id)
-        message.trigger = NotificationTriggers.PRIVATE_MESSAGE
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.PRIVATE_MESSAGE
         payload = get_message_payload_apns(user_profile, message)
         expected = {
             "alert": {
@@ -1538,7 +1539,7 @@ class TestGetAPNsPayload(PushNotificationTest):
             self.sender, [self.example_user("othello"), self.example_user("cordelia")]
         )
         message = Message.objects.get(id=message_id)
-        message.trigger = NotificationTriggers.PRIVATE_MESSAGE
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.PRIVATE_MESSAGE
         payload = get_message_payload_apns(user_profile, message)
         expected = {
             "alert": {
@@ -1571,7 +1572,7 @@ class TestGetAPNsPayload(PushNotificationTest):
     def test_get_message_payload_apns_stream_message(self) -> None:
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.STREAM_PUSH
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.STREAM_PUSH
         message.stream_name = "Verona"
         payload = get_message_payload_apns(self.sender, message)
         expected = {
@@ -1603,7 +1604,7 @@ class TestGetAPNsPayload(PushNotificationTest):
         user_profile = self.example_user("othello")
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.MENTION
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.MENTION
         message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message)
         expected = {
@@ -1636,7 +1637,7 @@ class TestGetAPNsPayload(PushNotificationTest):
         user_group = create_user_group("test_user_group", [user_profile], get_realm("zulip"))
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.MENTION
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.MENTION
         message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message, user_group.id, user_group.name)
         expected = {
@@ -1670,7 +1671,7 @@ class TestGetAPNsPayload(PushNotificationTest):
         user_profile = self.example_user("othello")
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.WILDCARD_MENTION
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.WILDCARD_MENTION
         message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message)
         expected = {
@@ -1705,7 +1706,7 @@ class TestGetAPNsPayload(PushNotificationTest):
             self.sender, [self.example_user("othello"), self.example_user("cordelia")]
         )
         message = Message.objects.get(id=message_id)
-        message.trigger = NotificationTriggers.PRIVATE_MESSAGE
+        MessageNotes.get_notes(message).trigger = NotificationTriggers.PRIVATE_MESSAGE
         payload = get_message_payload_apns(user_profile, message)
         expected = {
             "alert": {
@@ -1749,7 +1750,7 @@ class TestGetGCMPayload(PushNotificationTest):
         message.content = "a" * 210
         message.rendered_content = "a" * 210
         message.save()
-        message.trigger = trigger
+        MessageNotes.set_notes(message, MessageNotes(trigger=trigger))
 
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(
@@ -1808,7 +1809,7 @@ class TestGetGCMPayload(PushNotificationTest):
 
     def test_get_message_payload_gcm_private_message(self) -> None:
         message = self.get_message(Recipient.PERSONAL, 1)
-        message.trigger = NotificationTriggers.PRIVATE_MESSAGE
+        MessageNotes.set_notes(message, MessageNotes(trigger=NotificationTriggers.PRIVATE_MESSAGE))
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(hamlet, message)
         self.assertDictEqual(
@@ -1841,7 +1842,7 @@ class TestGetGCMPayload(PushNotificationTest):
     def test_get_message_payload_gcm_stream_notifications(self) -> None:
         stream = Stream.objects.get(name="Denmark")
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.STREAM_PUSH
+        MessageNotes.set_notes(message, MessageNotes(trigger=NotificationTriggers.STREAM_PUSH))
         message.stream_name = "Denmark"
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(hamlet, message)
@@ -1878,7 +1879,7 @@ class TestGetGCMPayload(PushNotificationTest):
     def test_get_message_payload_gcm_redacted_content(self) -> None:
         stream = Stream.objects.get(name="Denmark")
         message = self.get_message(Recipient.STREAM, stream.id)
-        message.trigger = NotificationTriggers.STREAM_PUSH
+        MessageNotes.set_notes(message, MessageNotes(trigger=NotificationTriggers.STREAM_PUSH))
         message.stream_name = "Denmark"
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(hamlet, message)

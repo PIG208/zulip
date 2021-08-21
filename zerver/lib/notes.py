@@ -1,6 +1,9 @@
 import weakref
 from abc import ABCMeta, abstractmethod
-from typing import Any, ClassVar, Generic, MutableMapping, TypeVar
+from dataclasses import dataclass
+from typing import Any, ClassVar, Generic, MutableMapping, Optional, TypeVar
+
+from zerver.models import Message
 
 _KeyT = TypeVar("_KeyT")
 _DataT = TypeVar("_DataT")
@@ -41,3 +44,12 @@ class BaseNotes(Generic[_KeyT, _DataT], metaclass=ABCMeta):
     @abstractmethod
     def init_notes(cls) -> _DataT:
         ...
+
+
+@dataclass
+class MessageNotes(BaseNotes[Message, "MessageNotes"]):
+    trigger: Optional[str] = None
+
+    @classmethod
+    def init_notes(cls) -> "MessageNotes":
+        return MessageNotes()

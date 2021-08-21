@@ -22,6 +22,7 @@ from zerver.decorator import statsd_increment
 from zerver.lib.avatar import absolute_avatar_url
 from zerver.lib.exceptions import JsonableError
 from zerver.lib.message import access_message, bulk_access_messages_expect_usermessage, huddle_users
+from zerver.lib.notes import MessageNotes
 from zerver.lib.remote_server import send_json_to_push_bouncer, send_to_push_bouncer
 from zerver.lib.timestamp import datetime_to_timestamp
 from zerver.lib.user_groups import access_user_group_by_id
@@ -554,25 +555,27 @@ def get_gcm_alert(message: Message, mentioned_user_group_name: Optional[str] = N
     """
     sender_str = message.sender.full_name
     display_recipient = get_display_recipient(message.recipient)
+    trigger = MessageNotes.get_notes(message).trigger
+
     if (
         message.recipient.type == Recipient.HUDDLE
-        and message.trigger == NotificationTriggers.PRIVATE_MESSAGE
+        and trigger == NotificationTriggers.PRIVATE_MESSAGE
     ):
         return f"New private group message from {sender_str}"
     elif (
         message.recipient.type == Recipient.PERSONAL
-        and message.trigger == NotificationTriggers.PRIVATE_MESSAGE
+        and trigger == NotificationTriggers.PRIVATE_MESSAGE
     ):
         return f"New private message from {sender_str}"
-    elif message.is_stream_message() and message.trigger == NotificationTriggers.MENTION:
+    elif message.is_stream_message() and trigger == NotificationTriggers.MENTION:
         if mentioned_user_group_name is None:
             return f"{sender_str} mentioned you in #{display_recipient}"
         else:
             return f"{sender_str} mentioned @{mentioned_user_group_name} in #{display_recipient}"
-    elif message.is_stream_message() and message.trigger == NotificationTriggers.WILDCARD_MENTION:
+    elif message.is_stream_message() and trigger == NotificationTriggers.WILDCARD_MENTION:
         return f"{sender_str} mentioned everyone in #{display_recipient}"
     else:
-        assert message.is_stream_message() and message.trigger == NotificationTriggers.STREAM_PUSH
+        assert message.is_stream_message() and trigger == NotificationTriggers.STREAM_PUSH
         return f"New stream message from {sender_str} in #{display_recipient}"
 
 
@@ -720,17 +723,18 @@ def get_apns_alert_title(message: Message) -> str:
 def get_apns_alert_subtitle(
     user_profile: UserProfile, message: Message, mentioned_user_group_name: Optional[str] = None
 ) -> str:
+    trigger = MessageNotes.get_notes(message).trigger
     """
     On an iOS notification, this is the second bolded line.
     """
-    if message.trigger == NotificationTriggers.MENTION:
+    if trigger == NotificationTriggers.MENTION:
         if mentioned_user_group_name is not None:
             return _("{full_name} mentioned @{user_group_name}:").format(
                 full_name=message.sender.full_name, user_group_name=mentioned_user_group_name
             )
         else:
             return _("{full_name} mentioned you:").format(full_name=message.sender.full_name)
-    elif message.trigger == NotificationTriggers.WILDCARD_MENTION:
+    elif trigger == NotificationTriggers.WILDCARD_MENTION:
         return _("{full_name} mentioned everyone:").format(full_name=message.sender.full_name)
     elif message.recipient.type == Recipient.PERSONAL:
         return ""
@@ -933,7 +937,7 @@ def handle_push_notification(user_profile_id: int, missed_message: Dict[str, Any
             )
             return
 
-    message.trigger = missed_message["trigger"]
+    MessageNotes.set_notes(message, MessageNotes(trigger=missed_message["trigger"]))
     mentioned_user_group_name = None
     mentioned_user_group_id = missed_message.get("mentioned_user_group_id")
 
