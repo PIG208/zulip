@@ -1573,7 +1573,6 @@ class TestGetAPNsPayload(PushNotificationTest):
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.get_notes(message).trigger = NotificationTriggers.STREAM_PUSH
-        message.stream_name = "Verona"
         payload = get_message_payload_apns(self.sender, message)
         expected = {
             "alert": {
@@ -1605,7 +1604,6 @@ class TestGetAPNsPayload(PushNotificationTest):
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.get_notes(message).trigger = NotificationTriggers.MENTION
-        message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message)
         expected = {
             "alert": {
@@ -1638,7 +1636,6 @@ class TestGetAPNsPayload(PushNotificationTest):
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.get_notes(message).trigger = NotificationTriggers.MENTION
-        message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message, user_group.id, user_group.name)
         expected = {
             "alert": {
@@ -1672,7 +1669,6 @@ class TestGetAPNsPayload(PushNotificationTest):
         stream = Stream.objects.filter(name="Verona").get()
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.get_notes(message).trigger = NotificationTriggers.WILDCARD_MENTION
-        message.stream_name = "Verona"
         payload = get_message_payload_apns(user_profile, message)
         expected = {
             "alert": {
@@ -1843,7 +1839,6 @@ class TestGetGCMPayload(PushNotificationTest):
         stream = Stream.objects.get(name="Denmark")
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.set_notes(message, MessageNotes(trigger=NotificationTriggers.STREAM_PUSH))
-        message.stream_name = "Denmark"
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(hamlet, message)
         self.assertDictEqual(
@@ -1880,7 +1875,6 @@ class TestGetGCMPayload(PushNotificationTest):
         stream = Stream.objects.get(name="Denmark")
         message = self.get_message(Recipient.STREAM, stream.id)
         MessageNotes.set_notes(message, MessageNotes(trigger=NotificationTriggers.STREAM_PUSH))
-        message.stream_name = "Denmark"
         hamlet = self.example_user("hamlet")
         payload, gcm_options = get_message_payload_gcm(hamlet, message)
         self.assertDictEqual(
