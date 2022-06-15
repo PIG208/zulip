@@ -30,8 +30,8 @@ def update_users_in_full_members_system_group(
         realm=realm, name="@role:members", is_system_group=True
     )
 
-    full_member_group_users: List[Dict[str, Union[int, datetime.datetime]]] = list()
-    member_group_users: List[Dict[str, Union[int, datetime.datetime]]] = list()
+    full_member_group_users = list()
+    member_group_users = list()
 
     if affected_user_ids:
         full_member_group_users = list(
