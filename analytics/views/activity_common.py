@@ -11,6 +11,8 @@ from django.template import loader
 from django.urls import reverse
 from markupsafe import Markup as mark_safe
 
+from zerver.models import UserActivity
+
 eastern_tz = pytz.timezone("US/Eastern")
 
 
@@ -84,13 +86,13 @@ def remote_installation_stats_link(server_id: int, hostname: str) -> mark_safe:
     return mark_safe(stats_link)
 
 
-def get_user_activity_summary(records: List[QuerySet]) -> Dict[str, Any]:
+def get_user_activity_summary(records: List[UserActivity]) -> Dict[str, Any]:
     #: The type annotation used above is clearly overly permissive.
     #: We should perhaps use TypedDict to clearly lay out the schema
     #: for the user activity summary.
     summary: Dict[str, Any] = {}
 
-    def update(action: str, record: QuerySet) -> None:
+    def update(action: str, record: UserActivity) -> None:
         if action not in summary:
             summary[action] = dict(
                 count=record.count,
