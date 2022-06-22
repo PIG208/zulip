@@ -88,7 +88,7 @@ preparing a new release.
 
 - The DigitalOcean one-click image will report in an internal channel
   once it is built, and how to test it. Verify it, then publish it
-  publish it to DigitalOcean marketplace.
+  to DigitalOcean marketplace.
 - Update the CI targets:
   - _For major releases only:_ In all of the following steps, _also_
     bump up the series that are being tested.
