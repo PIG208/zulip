@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from html import escape
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import pytz
 from django.conf import settings
@@ -86,7 +86,9 @@ def remote_installation_stats_link(server_id: int, hostname: str) -> mark_safe:
     return mark_safe(stats_link)
 
 
-def get_user_activity_summary(records: List[UserActivity]) -> Dict[str, Any]:
+def get_user_activity_summary(
+    records: Union[QuerySet[UserActivity], Sequence[UserActivity]]
+) -> Dict[str, Any]:
     #: The type annotation used above is clearly overly permissive.
     #: We should perhaps use TypedDict to clearly lay out the schema
     #: for the user activity summary.
