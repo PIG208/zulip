@@ -559,7 +559,6 @@ class MessageDict:
             # If we don't have a message object passed in, we get one here.  The cost
             # of going to the DB here should be overshadowed by the cost of rendering
             # and updating the row.
-            # TODO: see #1379 to eliminate Markdown dependencies
             message = Message.objects.select_related().get(id=message_id)
 
             assert message is not None  # Hint for mypy.
