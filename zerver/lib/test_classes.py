@@ -270,7 +270,8 @@ Output:
         extensive test coverage of corner cases in the API to ensure that we've properly
         documented those corner cases.
         """
-        if not url.startswith(("/json", "/api/v1")):
+        # Edited only for reproducing the error
+        if not url.startswith(("/json", "/api/v1", "/testing/user_groups")):
             return
         try:
             content = orjson.loads(result.content)

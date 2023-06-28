@@ -10,7 +10,7 @@ from zerver.actions.user_groups import check_add_user_group, promote_new_full_me
 from zerver.actions.users import do_deactivate_user
 from zerver.lib.mention import silent_mention_syntax_for_user
 from zerver.lib.streams import ensure_stream
-from zerver.lib.test_classes import ZulipTestCase
+from zerver.lib.test_classes import ZulipTestCase, ZulipTestCaseMixin
 from zerver.lib.test_helpers import most_recent_usermessage
 from zerver.lib.user_groups import (
     get_direct_user_groups,
@@ -32,7 +32,7 @@ from zerver.models import (
 )
 
 
-class UserGroupTestCase(ZulipTestCase):
+class UserGroupTestMixin(ZulipTestCaseMixin):
     def assert_user_membership(self, user_group: UserGroup, members: Iterable[UserProfile]) -> None:
         user_ids = get_user_group_member_ids(user_group, direct_member_only=True)
         self.assertSetEqual(set(user_ids), {member.id for member in members})
@@ -49,6 +49,8 @@ class UserGroupTestCase(ZulipTestCase):
         members = [self.example_user("othello")]
         return check_add_user_group(realm, group_name, members, acting_user=None)
 
+
+class UserGroupTestCase(UserGroupTestMixin, ZulipTestCase):
     def test_user_groups_in_realm_serialized(self) -> None:
         realm = get_realm("zulip")
         user_group = UserGroup.objects.filter(realm=realm).first()
