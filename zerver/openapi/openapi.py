@@ -8,6 +8,7 @@
 import json
 import os
 import re
+import threading
 from typing import Any, Dict, List, Mapping, Optional, Set, Tuple, Union, cast
 
 import orjson
@@ -15,6 +16,8 @@ from openapi_core import Spec, openapi_request_validator, openapi_response_valid
 from openapi_core.protocols import Response
 from openapi_core.testing import MockRequest, MockResponse
 from openapi_core.validation.exceptions import ValidationError as OpenAPIValidationError
+
+OPENAPI_LOCK = threading.Lock()
 
 OPENAPI_SPEC_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../openapi/zulip.yaml")
@@ -102,7 +105,12 @@ class OpenAPISpec:
 
             openapi = yaml.load(f, Loader=yaml.CSafeLoader)
 
+        # Having multiple threads validating the openapi schema at the same time causes DuplicateOperationIDError
+        # because validation has side effects on an internal attribute that is subject to a race condition.
+        # https://github.com/python-openapi/openapi-spec-validator/blob/9aed009b228d6d1fd947c3c8266b3385aa24a4ae/openapi_spec_validator/validation/validators.py#L152
+        OPENAPI_LOCK.acquire()
         spec = Spec.from_dict(openapi)
+        OPENAPI_LOCK.release()
         self._spec = spec
         self._openapi = naively_merge_allOf_dict(JsonRef.replace_refs(openapi))
         self.create_endpoints_dict()
